@@ -1,35 +1,48 @@
 package opdracht2;
 
-import opdracht1.Student;
-
 public class SortedList extends List {
 
 	public boolean push(Student subject) {
-		if (end != null) {
-			Student current = start;
-			Student last = end;
-			while (current.getNext() != null) {
-				if(current.getStudentNummer() == subject.getStudentNummer())
-					return false;
-				if (subject.getStudentNummer() > current.getStudentNummer()) {
-					last = current;
-					current = current.getNext();					
-				} else {
-					if(last != null)
-						last.setNext(subject);
-					subject.setNext(current);
-					return true;
-				}
+			if (start == null) {
+				start = end = subject;
+				size++;
+				return true;
+			} else {
+				addAndSort(subject);
+				return true;
+			}		
+	}
+	
+	public Student pop(Student subject){
+		Student current = start;
+		int counter = 0;
+		while(current != null){
+			if(current.equals(subject))
+				return super.pop(counter);
+			current = current.getNext();
+			counter++;
+		} 
+		
+		return null;
+	}
+
+	private void addAndSort(Student subject) {
+		Student current = start;
+		while (current.getStudentNummer() < subject.getStudentNummer()) {
+			current = current.getNext();
+			if (current == null) {
+				Student previous = end;
+				previous.setNext(subject);
+				end = subject;
+				this.size++;
+				return;
 			}
-			current.setNext(subject);
-			end = subject;
-			this.size++;
-			return true;
-		} else {
-			start = subject;
-			end = start;
-			this.size++;
-			return true;
 		}
+		Student next = current.getNext();
+		current.setNext(subject);
+		subject.setNext(next);
+		if(next == null)
+			end = subject;
+		size++;
 	}
 }

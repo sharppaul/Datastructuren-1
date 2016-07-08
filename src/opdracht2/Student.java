@@ -5,6 +5,7 @@ public class Student {
 	private String naam;
 	private int leeftijd;
 	private String geslacht;
+	private Student next;
 
 	public Student(int studentNummer, String naam, int leeftijd, String geslacht){
 		this.studentNummer = studentNummer;
@@ -12,7 +13,15 @@ public class Student {
 		this.leeftijd = leeftijd;
 		this.geslacht = geslacht;
 	}
-		
+	
+	public Student getNext(){
+		return this.next;
+	}
+	
+	public void setNext(Student next){
+		this.next = next;
+	}
+	
 	public int getStudentNummer() {
 		return studentNummer;
 	}
@@ -42,8 +51,10 @@ public class Student {
 	}
 
 	public void setGeslacht(String geslacht) {
-		if (geslacht.matches("M") || geslacht.matches("V"))
+		if (geslacht.matches("M") || geslacht.matches("V")) 
 			this.geslacht = geslacht;
+		else 
+			System.err.println("Invalid gender! (Don't kill me please, multi-gender people.)");
 	}
 
 	public void printStudent() {

@@ -1,34 +1,34 @@
 package opdracht2;
 
-import opdracht1.Student;
 
-public class List {
-	protected Student start;
-	protected Student end;
-	protected int size = 0;
-
+public class List extends Queue{
+	
+	@Override
+	public boolean push(Student subject){
+		return this.push(subject, size);
+	}
+	
 	public boolean push(Student subject, int index) {
-		if (end != null) {
-			Student current = start;
-			while (current != end) {
-				current = current.getNext();
-				if(current.getIndex() == index)
-					return false;
-			}
-			if(current.getIndex() == index)
-				return false;
-			current.setNext(subject);
-			subject.setIndex(index);
+		if(index > this.size || index < 0)
+			return false; //could throw outofbounds?
+		
+		if(index == this.size){
+			end.setNext(subject);
 			end = subject;
-			this.size++;
-			return true;
-		} else {
-			subject.setIndex(index);
-			start = subject;
-			end = start;
-			this.size++;
+			size++;
 			return true;
 		}
+		
+		Student last = null;
+		Student current = start;
+		for(int i = 0; i <= index; i++){
+			last = current;
+			current = current.getNext();
+		}
+		last.setNext(subject);
+		subject.setNext(current);
+		size++;
+		return true;
 	}
 
 	public int getSize() {
@@ -38,94 +38,56 @@ public class List {
 	public Student head() {
 		if (start != null) {
 			Student temp = start;
-			start = temp.getNext();
+			if(temp.getNext() != null)
+				start = temp.getNext();
 			size--;
 			return temp;
 		}
-		return null;
+		return start;
 	}
 	
 	public Student tail() {
 		if (start != null) {
-			if(start == end){
-				Student temp = start;
-				start = null;
-				end = null;
-				size--;
-				return temp;
+			Student secondLast = start;
+			Student end = start;
+			
+			while(secondLast.getNext() != null){
+				if(secondLast.getNext().getNext() == null){
+					end = secondLast.getNext();
+					break;
+				}
+				secondLast = secondLast.getNext();
 			}
-			
-			Student current = start;
-			while (current.getNext() != end) {
-				current = current.getNext();
-			}
-			
-			Student temp = end;
-			end = current;
-			end.setNext(null);
-			
-			return temp;
+			this.end = secondLast;
+			this.end.setNext(null);
+			this.size--;
+			return end;
 		}
 		return null;
 	}
 	
-	public Student pop(int index) {
+	public Student pop(int index) throws IndexOutOfBoundsException {
+		if(index == 0)
+			return head();
+		
+		if(index == this.size - 1){
+			return tail();
+		}
+		
+		if(index >= this.size || index < 0)
+			throw new IndexOutOfBoundsException();
+		
+		Student last = null;
 		Student current = start;
-		do {
-			if (current.getIndex() == index){
-				size--;
-				return current;
-			}
-			if(current != end)
-				current = current.getNext();
-		} while (current.getNext() != null);
-		return null;
-	}
-
-	public boolean peek(Student subject) {
-		if (start == null)
-			return false;
-
-		Student current = start;
-		while (current != end) {
-			if (current.getStudentNummer() == subject.getStudentNummer())
-				return true;
+		for(int i = 0; i <= index; i++){
+			last = current;
 			current = current.getNext();
 		}
 
-		return false;
-	}
-
-	public void printQueue() {
-		Student current = start;
-		System.out.println("Queue [");
-		do {
-			System.out.println(current.toString());
-			current = current.getNext();
-		} while (current != end);
-		System.out.println("]");
-	}
-
-	public void printMen() {
-		Student current = start;
-		System.out.println("Queue men: [");
-		do {
-			if (current.getGeslacht().equals("M"))
-				System.out.println(current.toString());
-			current = current.getNext();
-		} while (current != end);
-		System.out.println("]");
-	}
-
-	public void printWomen() {
-		Student current = start;
-		System.out.println("Queue women[");
-		do {
-			if (current.getGeslacht().equals("V"))
-				System.out.println(current.toString());
-			current = current.getNext();
-		} while (current != end);
-		System.out.println("]");
+		Student temp = current;
+		last.setNext(current.getNext());
+		size--;
+		return temp;		
 	}
 
 	
